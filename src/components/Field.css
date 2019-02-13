@@ -1,0 +1,35 @@
+.field {
+    margin: .5rem 0;
+}
+
+.field textarea {
+    min-height: 10rem;
+}
+
+.field:not(.checkbox) input, .field textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.field.checkbox {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.field.checkbox input {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    margin: 0 0.5rem 0 0;
+}
+
+.field.has-error {
+    color: #DB162F;
+}
+
+.field.has-error input, .field.has-error textarea {
+    border: 1px solid #DB162F;
+}
