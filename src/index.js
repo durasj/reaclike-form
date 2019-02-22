@@ -1,4 +1,4 @@
-import render from "./library/render";
+import renderer from "./library/renderer";
 import Form from "./components/Form";
 
 let state = {
@@ -80,6 +80,7 @@ const onSubmit = (e) => {
         });
 }
 
+const appRenderer = renderer();
 function renderApp(state) {
     const formEl = Form({
         onInputChange,
@@ -89,6 +90,6 @@ function renderApp(state) {
         sending: state.sending,
         result: state.result,
     });
-    render(formEl, document.getElementById('form-wrapper'));
+    appRenderer.render(formEl, document.getElementById('form-wrapper'));
 }
 renderApp(state);
