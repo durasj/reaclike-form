@@ -3,7 +3,12 @@ import createElement from "../library/createElement";
 
 function Field({ id, label, type, value, error, required, onChange }) {
     let tagName = 'input';
-    let attrs = { id, onChange, required: required === true ? true : undefined };
+    let attrs = {
+        id,
+        name: id,
+        onChange,
+        required: required === true ? true : undefined,
+    };
     if (type === 'textarea') {
         tagName = 'textarea';
     } else if (type === 'checkbox') {
