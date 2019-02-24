@@ -5,7 +5,7 @@
   "main": "src/index.html",
   "scripts": {
     "start": "parcel src/index.html --port 8080",
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html && npm run prerender",
     "prerender": "parcel build prerender.js -d prerender --target node && node prerender/prerender.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
