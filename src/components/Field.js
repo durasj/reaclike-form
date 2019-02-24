@@ -20,7 +20,7 @@ function Field({ id, label, type, value, error, required, onChange }) {
         'field',
         type === 'checkbox' ? 'checkbox' : undefined,
         error ? 'has-error' : undefined,
-    ].join(' ');
+    ].filter(c => !!c).join(' ');
     const child = tagName === 'textarea' ? value || '' : undefined;
     const requiredAsterisk = required === true ? '* ' : '';
     const colon = type === 'checkbox' ? '' : ':';

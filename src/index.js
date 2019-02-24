@@ -1,5 +1,10 @@
+import "babel-polyfill";
+import "whatwg-fetch";
+
 import renderer from "./library/renderer";
 import Form from "./components/Form";
+import validate from "./validate";
+import send from "./send";
 
 let state = {
     formData: { name: undefined, text: undefined, reply: false, email: undefined },
@@ -7,22 +12,6 @@ let state = {
     sending: false,
     result: undefined,
 };
-
-const validate = (formData, force) => Object.entries(formData).reduce((acc, entry) => {
-    const key = entry[0];
-    const value = entry[1];
-    const required = key === 'text' || (key === 'email' && formData.reply);
-    const isEmpty = force ? !value : value === '';
-    acc[key] = required && isEmpty ? 'Field is required' : undefined;
-    if (key === 'email' && acc[key] === undefined && typeof value === 'string') {
-        // https://www.w3.org/TR/2012/WD-html-markup-20120320/input.email.html#input.email.attrs.value.single
-        const isEmail = value.match(
-            /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        );
-        acc[key] = !isEmail ? 'Invalid email address' : undefined;
-    }
-    return acc;
-}, {});
 
 const onInputChange = (inputName, value) => {
     state = {
@@ -43,7 +32,6 @@ const onSubmit = (e) => {
 
     state = {
         ...state,
-        formData: state.formData,
         errors: validate(state.formData, true),
         sending: true,
     };
@@ -54,28 +42,10 @@ const onSubmit = (e) => {
         return;
     }
 
-    fetch('https://www.enformed.io/8j7kjppl/', {
-        method: 'POST',
-        body: JSON.stringify(state.formData),
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-    })
-        .then((response) => response.json())
-        .then((response) => {
-            state = { ...state, sending: false, result: {
-                success: true,
-                message: response.data,
-            } };
-            renderApp(state);
-        })
-        .catch((error) => {
-            console.error(error);
-            state = { ...state, sending: false, result: {
-                success: false,
-                message: 'There was an error. Please try it again.',
-             } };
+    renderApp(state);
+    send(e.target.action, state.formData)
+        .then((result) => {
+            state = { ...state, sending: false, result };
             renderApp(state);
         });
 }

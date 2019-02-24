@@ -49,7 +49,7 @@ function Form({ onInputChange, onSubmit, formData, errors, sending, result }) {
     });
     const buttonEl = createElement(
         'button',
-        { type: 'submit', disabled: sending ? true : undefined },
+        { type: 'submit', ...(sending ? { disabled: true } : undefined) },
         sending ? 'Sending...' : 'Send',
     );
     const resultEl = result ? createElement(
@@ -59,8 +59,8 @@ function Form({ onInputChange, onSubmit, formData, errors, sending, result }) {
     ) : undefined;
 
     const formEl = createElement(
-        "form",
-        { onSubmit: onSubmit, novalidate: true },
+        'form',
+        { onSubmit: onSubmit, novalidate: true, action: 'https://www.enformed.io/8j7kjppl/' },
         headingEl,
         descriptionEl,
         nameField,

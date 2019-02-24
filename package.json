@@ -6,11 +6,17 @@
   "scripts": {
     "start": "parcel src/index.html --port 8080",
     "build": "parcel build src/index.html",
+    "prerender": "parcel build prerender.js -d prerender --target node && node prerender/prerender.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jakub Duras<jakub@duras.me>",
   "license": "MIT",
   "devDependencies": {
+    "jsdom": "^13.2.0",
     "parcel-bundler": "^1.11.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "whatwg-fetch": "^3.0.0"
   }
 }

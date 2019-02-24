@@ -7,7 +7,7 @@
  * @param {Element} container
  */
 function renderRoot(element, container) {
-    if (!(container instanceof Element)) {
+    if (!(container instanceof window.Element)) {
         throw Error('Container is not a DOM element.');
     }
     if (!element || !element.tagName || !element.children) {
@@ -17,6 +17,7 @@ function renderRoot(element, container) {
     if (this.prevTree !== undefined) {
         rerender(element, this.prevTree, container.firstChild, container);
     } else {
+        container.innerHTML = '';
         render(element, container);
     }
 
@@ -25,7 +26,7 @@ function renderRoot(element, container) {
 
 function renderChildren(domElement, children) {
     if (typeof children[0] === 'string') {
-        domElement.innerText = children[0];
+        domElement.textContent = children[0];
         return domElement;
     }
 
@@ -76,14 +77,16 @@ function rerender(element, prevElement, domNode, container) {
 
     // This element wasn't previously but is now
     if (!prevElement && element) {
-        console.warn('Adding subtree', element);
-        render(element, container);
+        if (typeof element === 'string') {
+            container.textContent = element;
+        } else {
+            render(element, container);
+        }
         return;
     }
 
     // This element was previously but isn't now
     if (prevElement && !element) {
-        console.warn('Removing subtree', element);
         container.removeChild(domNode);
         return;
     }
@@ -93,14 +96,12 @@ function rerender(element, prevElement, domNode, container) {
         if (element === prevElement) {
             return;
         }
-        console.warn('Replacing with string', element);
-        container.replaceChild(domNode, document.createTextNode(element));
+        container.textContent = element;
         return;
     }
 
     // Element tag changed - replace
     if (prevElement.tagName !== element.tagName) {
-        console.warn('Changing subtree', element);
         container.replaceChild(domNode, renderChildren(container, element.children));
         return;
     }
@@ -109,7 +110,6 @@ function rerender(element, prevElement, domNode, container) {
     for (const [attrKey, attrValue] of Object.entries(element.attributes)) {
         // Always skip event listeners - we won't rebind them
         if (prevElement.attributes[attrKey] !== attrValue && attrKey.indexOf('on') !== 0) {
-            console.warn('Rerendering attribute', element, attrKey);
             domNode.setAttribute(attrKey, attrValue);
         }
     }
@@ -119,12 +119,12 @@ function rerender(element, prevElement, domNode, container) {
     for (let i = 0; i < maxChildren; i++) {
         if ((!element.children[i] && !prevElement.children[i])){
             continue;
-        } 
+        }
 
         rerender(
             element ? element.children[i] : undefined,
             prevElement ? prevElement.children[i] : undefined,
-            domNode.children[i],
+            domNode.childNodes[i],
             domNode,
         );
     }
